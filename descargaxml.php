@@ -1,12 +1,12 @@
 <?php include('headers/header.php'); ?>
 
-<center>
-        <div id="loading" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-    <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">Descargando Facturas... no recargues la página ni la cierres hasta que termine el proceso</p>
-    <div class="text-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-        <img src="https://codigofuente.io/wp-content/uploads/2018/09/progress.gif" alt="Loading..." class="img-fluid" style="margin-top: -10px; width:15%;">
-    </div>
-</div>
+     <center>
+        <div id="loading" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+        <p style="margin-top:90px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10000;">Descargando Facturas... no recargues la página ni la cierres hasta que termine el proceso</p>
+            <div class="text-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <img src="https://geekytheory.com/content/images/2015/02/loading.gif" alt="Loading..." class="img-fluid" style="margin-top: -10px; width:30%;">
+            </div>
+        </div>
       </center>
     
 
@@ -95,7 +95,7 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
                 <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
                 </div>
                 <div style="margin-top:30px;" class="col-md-2 d-flex align-items-center">
-                <input type="submit" class="btn btn-primary" id="descargar-facturas" value="Descargar Facturas">
+                <input type="submit" class="btn btn-primary" id="descargar-facturas" value="Descargar Facturas" disabled>
                 </div>    
 
             </div>
@@ -132,9 +132,11 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
             </tfoot>
         </table>
          <?php else: ?>
+
         <div class="alert alert-info" role="alert">
             No se encontraron facturas en el rango de fechas especificado.
         </div>
+        
     <?php endif ?>
 </div>
 
@@ -153,6 +155,30 @@ $(function() {
         });
     });
 });
+
+    const btnDescargarFacturas = document.getElementById('descargar-facturas');
+    const fechaInicio = document.getElementById('fecha_inicio');
+    const fechaFin = document.getElementById('fecha_fin');
+
+    fechaInicio.addEventListener('change', validarCampos);
+    fechaFin.addEventListener('change', validarCampos);
+
+    function validarCampos() {
+    if (fechaInicio.value && fechaFin.value) {
+        btnDescargarFacturas.disabled = false;
+    } else {
+        btnDescargarFacturas.disabled = true;
+    }
+    }
+
+    btnDescargarFacturas.addEventListener('click', (event) => {
+    if (!fechaInicio.value || !fechaFin.value) {
+        event.preventDefault();
+        alert('Los campos de fecha no pueden estar vacíos');
+    }
+    });
+
+
 </script>
 
 

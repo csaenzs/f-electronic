@@ -1,4 +1,5 @@
 <?php
+session_start();
 $facturas = array();
 
 $user_id = $_SESSION['user_id'];

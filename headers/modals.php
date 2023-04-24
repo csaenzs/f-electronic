@@ -29,8 +29,8 @@
       <div class="modal-body">
       <form action="registro_db_imap.php" method="post">
         <div class="mb-3">
-          <label for="correo" class="form-label">Correo electrónico:</label>
-          <input type="text" name="correo" id="correo" class="form-control" value="<?php echo $datos['correo_electronico_imap'] ?>" required>
+          
+          <input type="hidden" name="correo" id="correo" class="form-control" value="<?php echo $datos['correo_electronico_imap'] ?>" required>
         </div>
 
         <div class="mb-3">

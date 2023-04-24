@@ -1,14 +1,11 @@
 <?php
+include('facturas.php'); // Incluir el archivo de facturas
 use PhpOffice\PhpSpreadsheet\Worksheet\Row;
 include('headers/header.php');
 ?>
 
 <?php
 require_once 'db.php';
-
-// Incluir el archivo de facturas
-include('facturas.php');
-include('descargar_archivos.php');
 
 // Ordenar facturas por fecha de emisión en orden descendente
 usort($facturas, function($a, $b) {
@@ -44,6 +41,8 @@ if (empty($formato_get)) {
     // Decodificar el campo "campos" JSON
     $campos_seleccionados = json_decode($resultado['campos']);
 
+    $campos_seleccionados_des = implode(',', $campos_seleccionados);
+
     // Filtrar facturas por rango de fechas
     if (!empty($fecha_inicio) && !empty($fecha_fin)) {
         $facturas = array_filter($facturas, function($factura) use ($fecha_inicio, $fecha_fin) {
@@ -57,12 +56,26 @@ if (empty($formato_get)) {
 <div class="container mt-3">
     <h2 class="text-center">Facturas</h2>
     <div class="d-flex justify-content-end mb-3">
-        <a href="?descargar=csv" class="btn btn-primary me-3">Descargar CSV</a>
+        <form action="descargar_archivos.php" method="POST">
+            <input type="hidden" name="campos" value="<?php echo htmlspecialchars(json_encode($campos_seleccionados)); ?>">
+            <input type="hidden" name="fecha_inicio" value="<?php echo htmlspecialchars($fecha_inicio); ?>">
+            <input type="hidden" name="fecha_fin" value="<?php echo htmlspecialchars($fecha_fin); ?>">  
+            <input type="hidden" name="descargar" value="csv">
+            <button type="submit" class="btn btn-primary me-3">Descargar CSV</button>
+        </form>
+
+        <form action="descargar_archivos.php" method="POST">
+            <input type="hidden" name="campos" value="<?php echo htmlspecialchars(json_encode($campos_seleccionados)); ?>">
+            <input type="hidden" name="fecha_inicio" value="<?php echo htmlspecialchars($fecha_inicio); ?>">
+            <input type="hidden" name="fecha_fin" value="<?php echo htmlspecialchars($fecha_fin); ?>">  
+            <input type="hidden" name="descargar" value="excel">
+            <button type="submit" class="btn btn-primary me-3">Descargar Excel</button>
+        </form>
+
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filtrar-modal">
             Filtrar
         </button>
-    </div>
-    
+    </div>    
     <?php if (count($facturas) == 0) { ?>
     <div class="alert alert-danger" role="alert">
         No se encontraron facturas que coincidan con los criterios de búsqueda. Verifica que hayas ejecutado el comando de descargar facturas.

@@ -20,8 +20,18 @@ $datos = $stmt->fetch(PDO::FETCH_ASSOC);
 // Conexión al servidor de correo
 $host = $datos['host'];
 $puerto = $datos['puerto'];
+$email = $datos['user_imap'];
 
-$imap_server = '{'.$host.':'.$puerto.'/imap/ssl/novalidate-cert}INBOX';
+if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $domain = explode("@", $email)[1];
+    if ($domain == "hotmail.com") {
+        $imap_server = '{'.$host.':'.$puerto.'/imap/ssl}INBOX';
+    } else {
+        $imap_server = '{'.$host.':'.$puerto.'/imap/ssl/novalidate-cert}INBOX';
+    }
+  }
+
+//$imap_server = '{'.$host.':'.$puerto.'/imap/ssl/novalidate-cert}INBOX';
 $username = $datos['user_imap'];
 $password = $datos['password_imap'];
 
