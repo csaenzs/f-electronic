@@ -139,13 +139,14 @@ if (isset($_SESSION["user_id"])) {
 
           <?php if (isset($_SESSION['user_id'])): // Verificar si el usuario está conectado ?>
 
-            <!-- HTML que se mostrará solo si el usuario está conectado -->
+            <!-- Se oculta por que se incluye en el  perfil actualizado
             <li>
               <a href="#" class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#myModal">
                 <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#people-circle"/></svg>
                 Conf. Correo
               </a>
             </li>
+            -->
 
             <li>
               <a href="dashboard.php" class="nav-link text-white">
@@ -171,15 +172,25 @@ if (isset($_SESSION["user_id"])) {
                 <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#table"/></svg>
                   Ver Tabla
               </a>
-            </li>
-
-          <?php endif; ?>
+            </li>            
           
           <!--
           Custom styles for this template -->   
           </ul>
+          <div class="flex-shrink-0 dropdown custom-header">
+            <a href="#" style="color: white;" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://github.com/mdo.png" alt="mdo" width="40" height="40" class="rounded-circle border border-white">
+            </a>
+            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="background-color: white; color: black;">
+              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#myModal">Configurar Correo</a></li>
+              <li><a class="dropdown-item" href="perfil.php">Perfil</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="sesion_destroy.php">Cerrar sesión</a></li>
+            </ul>
+        </div>
         </div>
       </div>
+      <?php endif; ?>
     </div>
     <div class="px-3 py-2 border-bottom mb-3">
       <div class="container d-flex flex-wrap justify-content-center">
