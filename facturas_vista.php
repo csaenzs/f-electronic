@@ -7,10 +7,12 @@ include('headers/header.php');
 <?php
 require_once 'db.php';
 
+/*
 // Ordenar facturas por fecha de emisión en orden descendente
 usort($facturas, function($a, $b) {
     return strtotime($b['fecha_emision']) - strtotime($a['fecha_emision']);
 });
+*/
 
 // Primero, obtén la conexión a la base de datos
 require_once 'db.php';
@@ -83,25 +85,26 @@ if (empty($formato_get)) {
     </div>
 <?php } else { ?>
     <div class="table-responsive">
-        <table id="facturas-table" class="table table-striped">
-            <thead>
+    <table id="facturas-table" class="display nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <?php foreach ($campos_seleccionados as $campo) { ?>
+                    <th><?php echo $campo; ?></th>
+                <?php } ?>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($facturas as $factura) { ?>
                 <tr>
                     <?php foreach ($campos_seleccionados as $campo) { ?>
-                        <th><?php echo $campo; ?></th>
+                        <td><?php echo empty($factura[$campo]) ? '' : $factura[$campo]; ?></td>
                     <?php } ?>
                 </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($facturas as $factura) { ?>
-                    <tr>
-                        <?php foreach ($campos_seleccionados as $campo) { ?>
-                            <td><?php echo empty($factura[$campo]) ? $campo : $factura[$campo]; ?></td>
-                        <?php } ?>
-                    </tr>
-                <?php } ?>
-            </tbody>
-        </table>
-    </div>
+            <?php } ?>
+        </tbody>
+    </table>
+</div>
+
 <?php } ?>
 
 
@@ -158,15 +161,39 @@ if (empty($formato_get)) {
         </form>
     </div>
 </div>
+
+
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
 <script>
-    $(document).ready(function() {
-        $('#facturas-table').DataTable();
+
+$(document).ready(function() {
+  $('#facturas-table').DataTable({
+    "language": {
+      "url": "//cdn.datatables.net/plug-ins/1.11.3/i18n/Spanish.json"
+    },
+    "paging": true,
+    "pageLength": 10,
+    "order": [[ 0, "desc" ]],
+    "scrollX": true,
+    "autoWidth": false,
+    "columnDefs": [
+      { "width": "10%", "targets": 0 },
+      { "width": "20%", "targets": 1 },
+      { "width": "30%", "targets": 2 },
+      { "width": "40%", "targets": 3 },
+      { "width": "10%", "targets": 4 }
+    ]
+  });
+});
+
+
 
         // Abrir el modal de filtrado cuando se hace clic en el botón de filtrado
         $('#filtrar-btn').click(function() {
             $('#filtrar-modal').modal('show');
         });
-    });
+ 
 </script>
 <?php 
     include('headers/footer.php');
