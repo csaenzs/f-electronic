@@ -52,54 +52,66 @@ foreach (glob("archivosXML/$user_id/*.xml") as $archivo) {
     $receptor_tel = $xml2->xpath("//cbc:Telephone")[2];
     $receptor_correo = $xml2->xpath("//cbc:ElectronicMail")[1];
 
-    //Productos
-            //Descripción
-    $items = $xml2->xpath("//cac:Item/cbc:Description");
-    $items_array = array_map(function($node) {
-        return (string) $node;
-    }, $items);
-    $items_prod = implode(',', $items_array);
 
-            //Referencia
-    $ref = $xml2->xpath("//cac:StandardItemIdentification/cbc:ID");
-    $ref_array = array_map(function($node) {
-        return (string) $node;
-    }, $ref);
-    $ref_items = implode(',', $ref_array);
+        // Productos
+        // Descripción
+        $items = $xml2->xpath("//cac:Item/cbc:Description");
+        $items_array = array_map(function($node) {
+            return (string) $node;
+        }, $items);
+        $items_prod = $items_array;
 
-                //Cantidad
-    $qty = $xml2->xpath("//cac:Price/cbc:BaseQuantity");
-    $qty_array = array_map(function($node) {
-        return (string) $node;
-    }, $qty);   
-    $qty_items = implode(',', $qty_array);      
+        // Referencia
+        $ref = $xml2->xpath("//cac:StandardItemIdentification/cbc:ID");
+        $ref_array = array_map(function($node) {
+            return (string) $node;
+        }, $ref);
+        $ref_items = $ref_array;
+
+        // Cantidad
+        $qty = $xml2->xpath("//cac:Price/cbc:BaseQuantity");
+        $qty_items = array_map(function($node) {
+            return floatval((string) $node);
+        }, $qty);
+
+        // Valor Descuento Items o productos
+        $des_prod = $xml2->xpath("//cbc:AllowanceTotalAmount");
+        $des_items = array_map(function($node) {
+            return floatval((string) $node);
+        }, $des_prod);
+
+        // Valor Unitario antes de iva
+        $price_unt = $xml2->xpath("//cac:Price/cbc:PriceAmount");
+        $precio_items = array_map(function($node) {
+            return floatval((string) $node);
+        }, $price_unt);
+
+        // Valor Total Items antes de iva subtotal
+        $subtotal_prod = $xml2->xpath("//cac:InvoiceLine/cbc:LineExtensionAmount");
+        $subtotal_items = array_map(function($node) {
+            return floatval((string) $node);
+        }, $subtotal_prod);
+
+        // Porcentaje de IVA
+        $porcIVA_prod = $xml2->xpath("//cbc:Percent");
+        $porcIVA_items = array_map(function($node) {
+            return floatval((string) $node);
+        }, $porcIVA_prod);
+
+        $iva_items = array_map(function($precio, $porcIVA) {
+            return ($precio * $porcIVA) / 100;
+        }, $precio_items, $porcIVA_items);
+
+        $precio_items_incl_IVA = array_map(function($precio, $porcIVA) {
+            return ($precio * $porcIVA / 100) + $precio;
+        }, $precio_items, $porcIVA_items);
+
+        $precio_total_incl_IVA = array_map(function($precio, $qty) {
+            return $precio * $qty;
+        }, $precio_items_incl_IVA, $qty_items);
 
 
-                            //valor Descuento Items o productos
-    $des_prod = $xml2->xpath("//cbc:AllowanceTotalAmount");
-    $des_prod_array = array_map(function($node) {
-        return (string) $node;
-    }, $des_prod);
-    $des_items = implode(',', $des_prod_array);
-
-
- 
-                //valor Unitario antes de iva
-    $price_unt = $xml2->xpath("//cac:Price/cbc:PriceAmount");
-    $price_unt_array = array_map(function($node) {
-        return (string) $node;
-    }, $price_unt);
-    $precio_items = implode(',', $price_unt_array);
-
-                    //valor valor iva Items o productos
-    $iva_prod = $xml2->xpath("//cbc:TaxAmount");
-    $iva_prod_array = array_map(function($node) {
-        return (string) $node;
-    }, $iva_prod);
-    $iva_items = implode(',', $iva_prod_array);
-
-
-
+       
     $subtotal = $xml2->xpath("//cbc:LineExtensionAmount")[0];
     $iva = $xml2->xpath("//cbc:TaxAmount")[0];
     $total = $xml2->xpath("//cbc:TaxInclusiveAmount")[0];   
@@ -136,15 +148,21 @@ foreach (glob("archivosXML/$user_id/*.xml") as $archivo) {
         'items_prod' => $items_prod,
         'ref_items' => $ref_items,
         'qty_items' => $qty_items,
-        'des_items' => $des_items,
+        'des_items' => $des_items, 
         'precio_items' => $precio_items,
+        'precio_items_incl_IVA' => $precio_items_incl_IVA,
         'iva_items' => $iva_items,
+        'porcIVA_items' => $porcIVA_items,
+        'subtotal_items' => $subtotal_items,
+        'precio_total_incl_IVA' => $precio_total_incl_IVA,
         'subtotal' => $subtotal,
         'iva' => $iva,
         'total' => $total
     );
-             
+    
 
+   // var_dump($precio_total_incl_IVA);
+                
 }
 
 
