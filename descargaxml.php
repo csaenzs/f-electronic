@@ -140,6 +140,60 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
     <?php endif ?>
 </div>
 
+<?php 
+
+    require_once('db.php'); // Importa la conexión PDO
+
+    $facturas_procesadas = 0;
+    $facturas_registradas = 0;
+    $facturas_ya_registradas = 0;
+
+    //Guardar los datos en la tabla facturas_descargadas
+    if (!empty($facturas)) { // Verifica que el array tenga datos
+
+        // Itera sobre cada factura en el array
+        foreach ($facturas as $factura) {
+    
+            // Verificar si la factura ya está registrada en la base de datos
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM facturas_descargadas WHERE nombre = ?");
+            $stmt->execute([$factura['archivo']]);
+            $result = $stmt->fetchColumn();
+
+            if ($result > 0) {
+                // La factura ya está registrada en la base de datos
+                $facturas_ya_registradas++;
+                continue;
+            }
+
+            // Prepara la consulta INSERT con parámetros
+            $stmt = $pdo->prepare("INSERT INTO facturas_descargadas (fecha_descarga, fecha_factura, nombre, id_usuario) VALUES (?, ?, ?, ?)");
+
+            // Asigna los valores de los parámetros
+            $fecha_db = date('Y-m-d', strtotime($factura['fecha']));
+            $nombre_db = $factura['archivo'];
+            $id_usuario = $_SESSION['user_id']; // Aquí deberías asignar el ID de usuario correspondiente
+            $fecha_actual = date('Y-m-d');
+
+            try {
+                $stmt->execute([$fecha_actual, $fecha_db, $nombre_db, $id_usuario]);
+                $facturas_registradas++;
+            } catch (PDOException $e) {
+                echo "Error al guardar factura en la base de datos: " . $e->getMessage();
+            }
+
+            $facturas_procesadas++;
+            
+        }
+
+        // Mensaje de éxito
+        echo "<center><div class='alert alert-success' role='alert'>{$facturas_registradas} facturas registradas correctamente en la base de datos, y {$facturas_ya_registradas} facturas ya estaban registradas. Total de facturas procesadas: {$facturas_procesadas}</div></center>";
+        
+    } 
+
+?>
+
+
+
 <!-- JavaScript -->
 <script>
 $(function() {

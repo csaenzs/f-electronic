@@ -74,47 +74,48 @@ foreach (glob("archivosXML/$user_id/*.xml") as $archivo) {
             return floatval((string) $node);
         }, $qty);
 
+   // VALORES FORMATEADOS A DOS DECIMALES
+
         // Valor Descuento Items o productos
         $des_prod = $xml2->xpath("//cbc:AllowanceTotalAmount");
         $des_items = array_map(function($node) {
-            return floatval((string) $node);
+            return round(floatval((string) $node), 2);
         }, $des_prod);
 
         // Valor Unitario antes de iva
         $price_unt = $xml2->xpath("//cac:Price/cbc:PriceAmount");
         $precio_items = array_map(function($node) {
-            return floatval((string) $node);
+            return round(floatval((string) $node), 2);
         }, $price_unt);
 
         // Valor Total Items antes de iva subtotal
         $subtotal_prod = $xml2->xpath("//cac:InvoiceLine/cbc:LineExtensionAmount");
         $subtotal_items = array_map(function($node) {
-            return floatval((string) $node);
+            return round(floatval((string) $node), 2);
         }, $subtotal_prod);
 
         // Porcentaje de IVA
         $porcIVA_prod = $xml2->xpath("//cbc:Percent");
         $porcIVA_items = array_map(function($node) {
-            return floatval((string) $node);
+            return round(floatval((string) $node), 2);
         }, $porcIVA_prod);
 
         $iva_items = array_map(function($precio, $porcIVA) {
-            return ($precio * $porcIVA) / 100;
+            return round(($precio * $porcIVA) / 100, 2);
         }, $precio_items, $porcIVA_items);
 
         $precio_items_incl_IVA = array_map(function($precio, $porcIVA) {
-            return ($precio * $porcIVA / 100) + $precio;
+            return round(($precio * $porcIVA / 100) + $precio, 2);
         }, $precio_items, $porcIVA_items);
 
         $precio_total_incl_IVA = array_map(function($precio, $qty) {
-            return $precio * $qty;
+            return round($precio * $qty, 2);
         }, $precio_items_incl_IVA, $qty_items);
 
+        $subtotal = round(floatval($xml2->xpath("//cbc:LineExtensionAmount")[0]), 2);
+        $iva = round(floatval($xml2->xpath("//cbc:TaxAmount")[0]), 2);
+        $total = round(floatval($xml2->xpath("//cbc:TaxInclusiveAmount")[0]), 2);
 
-       
-    $subtotal = $xml2->xpath("//cbc:LineExtensionAmount")[0];
-    $iva = $xml2->xpath("//cbc:TaxAmount")[0];
-    $total = $xml2->xpath("//cbc:TaxInclusiveAmount")[0];   
 
        // Agregar los datos a la tabla
 
@@ -160,8 +161,6 @@ foreach (glob("archivosXML/$user_id/*.xml") as $archivo) {
         'total' => $total
     );
     
-
-   // var_dump($precio_total_incl_IVA);
                 
 }
 

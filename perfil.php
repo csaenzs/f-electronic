@@ -45,7 +45,51 @@
             }
         }
 
+
+        
+            //ACTUALIZAR FOTO DE PERFIL
+            
+            // Verificar si se ha enviado una imagen
+            if(isset($_FILES['profile_image'])) {
+                
+                // Verificar que la imagen sea válida
+                if($_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+                    
+                    // Verificar que la imagen no exceda el tamaño máximo permitido (por ejemplo, 1MB)
+                    if($_FILES['profile_image']['size'] <= 1000000) {
+                        
+                        // Guardar la imagen en una carpeta en el servidor
+                        $image_name = uniqid() . '_' . $_FILES['profile_image']['name'];
+                        move_uploaded_file($_FILES['profile_image']['tmp_name'], 'uploads/' . $image_name);
+                        
+                        // Obtener el ID del usuario actual
+                        $user_id = $_SESSION['user_id'];
+                        
+                        // Guardar la URL de la imagen en la base de datos
+                        $stmt = $pdo->prepare('UPDATE usuarios SET image = ? WHERE id = ?');
+                        $stmt->execute(['uploads/' . $image_name, $user_id]);
+                        
+                        header('Location: perfil.php?estado=1');
+                        
+                    } else {
+                        echo 'La imagen es demasiado grande.';
+                    }
+                    
+                } else {
+                    echo 'Se ha producido un error al subir la imagen.';
+                }
+                
+            }
+
+
+            if (isset($_GET['estado']) && $_GET['estado'] == 1) {
+              echo '<div id="quitar-div-aler" class="alert alert-success d-flex justify-content-center align-items-center" role="alert">
+              <span>Bien, Imagen de perfil modificada con éxito</span>
+            </div>';
+            }
+            
 ?>
+
 
 <section style="background-color: #eee;">
   <div class="container py-5">
@@ -54,7 +98,7 @@
       <div class="col-lg-4">
         <div class="card mb-4">
           <div class="card-body text-center">
-            <img src="https://github.com/mdo.png" alt="avatar"
+            <img src="<?php echo $datos['image'] ?>" alt="avatar"
               class="rounded-circle img-fluid" style="width: 150px;">
             <h5 class="my-3"><?php echo $datos['nombres'] ?></h5>
             <p class="text-muted mb-1"><?php if($datos['estado']==1){ echo '<p class="btn btn-primary" href="sign-in">->   Activo    <- </p>';} ?></p>
@@ -88,7 +132,7 @@
                 <p class="mb-0">Telefono</p>
               </div>
               <div class="col-sm-9">
-                <p class="text-muted mb-0">(097) 234-5678</p>
+                <p class="text-muted mb-0"><?php echo $datos['tel'] ?></p>
               </div>
             </div>
             <hr>
@@ -125,10 +169,33 @@
             </div>
           </div>
 
+          <div class="col-md-12">
+            <h2 class="text-center my-3">Cambiar Imagen de Perfil</h2>
+            <form  method="post" enctype="multipart/form-data">
+              <div class="mb-3">
+                <input type="file" class="form-control" id="image" name="profile_image" accept="image/*" required>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary">Cargar Imagen</button>
+              </div>
+            </form>
+          </div>
+
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+        // Eliminar div despues de creado
+        var div = document.getElementById('quitar-div-aler');
+      setTimeout(function(){
+          div.remove();
+      }, 2000); // eliminar el div después de 5 segundos (5000 milisegundos)
+
+
+
+</script>
 
 <?php include('headers/footer.php'); ?>
