@@ -54,8 +54,6 @@ if (empty($formato_get)) {
     }
 }
 
-
-
 ?>
 
 <!-- boton para regresar al inicio  -->
@@ -215,13 +213,8 @@ if (empty($formato_get)) {
 </div>
 
 <br><br><br><br><br>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css"/>
 
-
-
-  <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-
-
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
@@ -233,44 +226,44 @@ if (empty($formato_get)) {
 
 <script>
 
-$(document).ready(function() {
-      $('#facturas-table').DataTable({
-        "language": {
-          "url": "//cdn.datatables.net/plug-ins/1.11.3/i18n/Spanish.json"
-        },
-        "paging": true,
-        "pageLength": 10,
-        "order": [[ 0, "desc" ]],
-        "scrollX": true,
-        "autoWidth": false,
-        "columnDefs": [
-          { "width": "10%", "targets": 0 },
-          { "width": "20%", "targets": 1 },
-          { "width": "30%", "targets": 2 },
-          { "width": "40%", "targets": 3 },
-          { "width": "10%", "targets": 4 }
-        ],
-        "dom": 'Bfrtip',
-        "buttons": [
-          {
-            extend: 'csv',
-            text: 'Exportar a CSV',
-            charset: 'utf-8',
-            bom: true,
-            filename: 'facturas'
-          },
-          {
-            extend: 'excel',
-            text: 'Exportar a Excel',
-            charset: 'utf-8',
-            bom: true,
-            filename: 'facturas'
-          }
-        ]
-      });
-  
-      $("div.toolbar").html('<div class="btn-group"><h5>Exportar a:</h5>' + $('#facturas-table').DataTable().buttons().container().prependTo($('div.toolbar')) + '</div>');
-    });
+        $(document).ready(function() {
+        $('#facturas-table').DataTable({
+            "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.11.3/i18n/Spanish.json"
+            },
+            "paging": true,
+            "pageLength": 10,
+            "order": [[ 0, "desc" ]],
+            "scrollX": true,
+            "autoWidth": false,
+            "columnDefs": [
+            { "width": "10%", "targets": 0 },
+            { "width": "20%", "targets": 1 },
+            { "width": "30%", "targets": 2 },
+            { "width": "40%", "targets": 3 },
+            { "width": "10%", "targets": 4 }
+            ],
+            "dom": '<"top"lBf>rtip',
+            "buttons": [
+            {
+                extend: 'csv',
+                text: 'Exportar a CSV',
+                charset: 'utf-8',
+                bom: true,
+                filename: 'facturas'
+            },
+            {
+                extend: 'excel',
+                text: 'Exportar a Excel',
+                charset: 'utf-8',
+                bom: true,
+                filename: 'facturas'
+            }
+            ]
+        });
+
+        $("div.toolbar").html('<div class="btn-group"><h5>Exportar a:</h5>' + $('#facturas-table').DataTable().buttons().container().prependTo($('div.toolbar')) + '</div>');
+        });
 
 
         // Abrir el modal de filtrado cuando se hace clic en el botón de filtrado

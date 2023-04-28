@@ -8,7 +8,20 @@
             </div>
         </div>
       </center>
-    
+
+      <center>
+        <div id="loading-conexion" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+        <p style="margin-top:90px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10000;">Validando la conexión al correo electronico</p>
+            <div class="text-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <img src="https://geekytheory.com/content/images/2015/02/loading.gif" alt="Loading..." class="img-fluid" style="margin-top: -10px; width:30%;">
+            </div>
+        </div>
+      </center>
+
+      <div class="d-flex">
+    <a href="descargaxml.php?conexion=1" id="validar-conexion" class="btn btn-primary ms-auto text-end">Validar conexión con el Correo</a>
+    </div>
+
 
 <?php
 
@@ -19,9 +32,23 @@ $facturas = array(); // Definir un array para guardar la información de las fac
 $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : '';
 $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : '';
 
+        if (isset($_GET['conexion']) && $_GET['conexion'] == 1) {
+
+            require_once 'conexion_correo.php';
+
+            // Comprobamos si la conexión se realizó con éxito
+            if ($mailbox) {
+                echo '<center><div class="alert alert-success alert-dismissible fade show" role="alert">Su conexión al correo se establecio con éxito. Por favor seleccione el rango de fechas de las facturas a descargar</div></center>';
+            } else {
+                echo '<center><div class="alert alert-danger alert-dismissible fade show" role="alert">La conexión falló. Error: ' . imap_last_error() . '</div></center>';
+            }
+
+        }
+
+
 if (!empty($fecha_inicio) && !empty($fecha_fin)) {
 
-    include('conexion_correo.php');
+   include('conexion_correo.php');
 
     // Convertir las fechas al formato necesario para la búsqueda
     $fecha_inicio = date("d-M-Y", strtotime($fecha_inicio));
@@ -31,7 +58,7 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
 
     // Iterar sobre los correos encontrados y procesarlos como se desee
     if ($emails) {
-        
+
         $facturas = array(); // Definir un array para guardar la información de las facturas
             $user_id = $_SESSION['user_id'];
 
@@ -108,6 +135,7 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
 
 ?>
 
+
 <!-- boton para regresar al inicio  -->
 
 <button id="subir"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-up-square" viewBox="0 0 16 16">
@@ -140,6 +168,7 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
                 </tr>
             </tfoot>
         </table>
+
          <?php else: ?>
 
         <div class="alert alert-info" role="alert">
@@ -197,14 +226,25 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
         // Mensaje de éxito
         echo "<center><div class='alert alert-success' role='alert'>{$facturas_registradas} facturas registradas correctamente en la base de datos, y {$facturas_ya_registradas} facturas ya estaban registradas. Total de facturas procesadas: {$facturas_procesadas}</div></center>";
         
+        echo '<div class="d-flex justify-content-center">
+                 <a href="descargaxml.php" class="btn btn-primary text-center"><-- Regresar</a>
+             </div>';
     } 
 
 ?>
 
 <br><br><br><br><br>
 
-<!-- JavaScript -->
 <script>
+$(function() {
+    $('#validar-conexion').on('click', function() {
+        // Mostrar la animación
+        $('#loading-conexion').show();
+
+    });
+});
+
+
 $(function() {
     $('#descargar-facturas').on('click', function() {
         // Mostrar la animación
@@ -246,4 +286,3 @@ $(function() {
 
 
 <?php include('headers/footer.php'); ?>
-

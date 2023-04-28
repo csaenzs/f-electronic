@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 require_once 'db.php';
 
 // Preparamos la consulta SQL
