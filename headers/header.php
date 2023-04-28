@@ -28,6 +28,24 @@ if (isset($_SESSION["user_id"])) {
   header("Location: sign-in/index.php");
   exit();
 }
+
+         require_once 'db.php';
+
+        // Preparamos la consulta SQL
+        $sql = "SELECT * FROM usuarios WHERE id = :id";
+
+        // Preparamos el statement
+        $stmt = $pdo->prepare($sql);
+
+        // Asignamos los valores a los parámetros de la consulta
+        $stmt->bindParam(':id', $_SESSION["user_id"]);
+
+        // Ejecutamos la consulta
+        $stmt->execute();
+
+        // Obtenemos los resultados en un arreglo asociativo
+        $datos = $stmt->fetch(PDO::FETCH_ASSOC);
+
 ?>
 
 
@@ -46,14 +64,23 @@ if (isset($_SESSION["user_id"])) {
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.css"/>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+        <!--  biblioteca buttons.css -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css"/>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-
     
 
     <!-- Bootstrap core CSS -->
     <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+     <!-- boton para regresar al inicio  -->
+     <link rel="stylesheet" href="assets/scrolltop.css">
+     <script src="assets/scrolltop.js"></script>
+
+    
 
     <style>
       .bd-placeholder-img {
@@ -179,7 +206,7 @@ if (isset($_SESSION["user_id"])) {
           </ul>
           <div class="flex-shrink-0 dropdown custom-header">
             <a href="#" style="color: white;" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="mdo" width="40" height="40" class="rounded-circle border border-white">
+            <img src="<?php echo $datos['image'] ?>" alt="mdo" width="40" height="40" class="rounded-circle border border-white">
             </a>
             <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="background-color: white; color: black;">
               <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#myModal">Configurar Correo</a></li>

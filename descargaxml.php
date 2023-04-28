@@ -25,7 +25,7 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
 
     // Convertir las fechas al formato necesario para la búsqueda
     $fecha_inicio = date("d-M-Y", strtotime($fecha_inicio));
-    $fecha_fin = date("d-M-Y", strtotime($fecha_fin));
+    $fecha_fin = date("d-M-Y", strtotime($fecha_fin . ' +1 day')); 
     // Realizar la búsqueda de correos en el rango de fechas deseado
     $emails = imap_search($mailbox, 'SINCE "'.$fecha_inicio.'" BEFORE "'.$fecha_fin.'"');
 
@@ -107,6 +107,15 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
 }
 
 ?>
+
+<!-- boton para regresar al inicio  -->
+
+<button id="subir"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-up-square" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"/>
+</svg></button>
+
+<!-- boton para regresar al inicio  -->
+
 <div class="container mt-4">
     <h1>Facturas procesadas</h1>
     <?php if ($facturas): ?>
@@ -192,7 +201,7 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
 
 ?>
 
-
+<br><br><br><br><br>
 
 <!-- JavaScript -->
 <script>

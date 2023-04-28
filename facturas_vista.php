@@ -58,28 +58,17 @@ if (empty($formato_get)) {
 
 ?>
 
+<!-- boton para regresar al inicio  -->
+
+<button id="subir"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-up-square" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"/>
+</svg></button>
+
+<!-- boton para regresar al inicio  -->
+
 <div class="container mt-3">
     <h2 class="text-center">Facturas</h2>
     <div class="d-flex justify-content-end mb-3">
-<?php if (!empty($formato_get) && !empty($tipo_tabla)) { ?>
-        <form action="descargar_excel.php" method="GET">
-            <input type="hidden" name="campos" value="<?php echo htmlspecialchars(json_encode($campos_seleccionados)); ?>">
-            <input type="hidden" name="fecha_inicio" value="<?php echo htmlspecialchars($fecha_inicio); ?>">
-            <input type="hidden" name="fecha_fin" value="<?php echo htmlspecialchars($fecha_fin); ?>">  
-            <input type="hidden" name="tipo_tabla" value="<?php echo htmlspecialchars($tipo_tabla); ?>">
-            <input type="hidden" name="formato" value="<?php echo htmlspecialchars($formato_get); ?>">
-            <button type="submit" class="btn btn-primary me-3">Descargar Excel</button>
-        </form>
-        <form action="descargar_csv.php" method="GET">
-            <input type="hidden" name="campos" value="<?php echo htmlspecialchars(json_encode($campos_seleccionados)); ?>">
-            <input type="hidden" name="fecha_inicio" value="<?php echo htmlspecialchars($fecha_inicio); ?>">
-            <input type="hidden" name="fecha_fin" value="<?php echo htmlspecialchars($fecha_fin); ?>">  
-            <input type="hidden" name="tipo_tabla" value="<?php echo htmlspecialchars($tipo_tabla); ?>">
-            <input type="hidden" name="formato" value="<?php echo htmlspecialchars($formato_get); ?>">
-            <button type="submit" class="btn btn-primary me-3">Descargar CSV</button>
-        </form>
-<?php }?>
-
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filtrar-modal">
             Filtrar
         </button>
@@ -225,31 +214,63 @@ if (empty($formato_get)) {
     </div>
 </div>
 
+<br><br><br><br><br>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css"/>
 
-<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+
+  <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.print.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.colVis.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
 
 <script>
 
 $(document).ready(function() {
-  $('#facturas-table').DataTable({
-    "language": {
-      "url": "//cdn.datatables.net/plug-ins/1.11.3/i18n/Spanish.json"
-    },
-    "paging": true,
-    "pageLength": 10,
-    "order": [[ 0, "desc" ]],
-    "scrollX": true,
-    "autoWidth": false,
-    "columnDefs": [
-      { "width": "10%", "targets": 0 },
-      { "width": "20%", "targets": 1 },
-      { "width": "30%", "targets": 2 },
-      { "width": "40%", "targets": 3 },
-      { "width": "10%", "targets": 4 }
-    ]
-  });
-});
-
+      $('#facturas-table').DataTable({
+        "language": {
+          "url": "//cdn.datatables.net/plug-ins/1.11.3/i18n/Spanish.json"
+        },
+        "paging": true,
+        "pageLength": 10,
+        "order": [[ 0, "desc" ]],
+        "scrollX": true,
+        "autoWidth": false,
+        "columnDefs": [
+          { "width": "10%", "targets": 0 },
+          { "width": "20%", "targets": 1 },
+          { "width": "30%", "targets": 2 },
+          { "width": "40%", "targets": 3 },
+          { "width": "10%", "targets": 4 }
+        ],
+        "dom": 'Bfrtip',
+        "buttons": [
+          {
+            extend: 'csv',
+            text: 'Exportar a CSV',
+            charset: 'utf-8',
+            bom: true,
+            filename: 'facturas'
+          },
+          {
+            extend: 'excel',
+            text: 'Exportar a Excel',
+            charset: 'utf-8',
+            bom: true,
+            filename: 'facturas'
+          }
+        ]
+      });
+  
+      $("div.toolbar").html('<div class="btn-group"><h5>Exportar a:</h5>' + $('#facturas-table').DataTable().buttons().container().prependTo($('div.toolbar')) + '</div>');
+    });
 
 
         // Abrir el modal de filtrado cuando se hace clic en el botón de filtrado

@@ -90,6 +90,13 @@
             
 ?>
 
+<!-- boton para regresar al inicio  -->
+
+<button id="subir"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-up-square" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"/>
+</svg></button>
+
+<!-- boton para regresar al inicio  -->
 
 <section style="background-color: #eee;">
   <div class="container py-5">
@@ -99,7 +106,7 @@
         <div class="card mb-4">
           <div class="card-body text-center">
             <img src="<?php echo $datos['image'] ?>" alt="avatar"
-              class="rounded-circle img-fluid" style="width: 150px;">
+              class="rounded-circle img-fluid" style="width: 150px; height: 150px;">
             <h5 class="my-3"><?php echo $datos['nombres'] ?></h5>
             <p class="text-muted mb-1"><?php if($datos['estado']==1){ echo '<p class="btn btn-primary" href="sign-in">->   Activo    <- </p>';} ?></p>
           </div>
@@ -185,7 +192,10 @@
       </div>
     </div>
   </div>
+  <br><br><br><br><br>
 </section>
+
+
 
 <script>
         // Eliminar div despues de creado
